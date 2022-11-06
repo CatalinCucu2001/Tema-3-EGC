@@ -10,7 +10,7 @@ namespace OpenTK_immediate_mode
 
         Vector3[] vect;
         Color [] colors = {Color.Blue, Color.Aquamarine, Color.Yellow};
-        private int[] alpha = {255, 255, 255};
+        private int[] alpha = {255, 1, 1};
 
         public Triunghi2D()
         {

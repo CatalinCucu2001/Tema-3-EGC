@@ -17,14 +17,15 @@ namespace OpenTK_immediate_mode
         private float zNear = 1;
         private float zFar = 200;
 
-
-
-
         // Some vars
         private Vector3 eyePos = new Vector3(50, 30, 50);
         private Vector3 lookAtPos = new Vector3(0, 0, 0);
-
         private Triunghi2D triunghi2D = new Triunghi2D();
+
+        // for mouse
+        private int mouseState;
+        private double radius = 1;
+        private Vector2 mousePos;
 
 
         public ImmediateMode() : base(800, 600, new GraphicsMode(32, 24, 0, 8))
@@ -163,6 +164,57 @@ namespace OpenTK_immediate_mode
             if (keyboard[Key.A] && keyboard[Key.Number3])
             {
                 triunghi2D.IncrementColorForEachPoint(2, 3);
+
+            }
+
+            if (mouse.LeftButton == ButtonState.Released)
+            {
+                mouseState = 0;
+            }
+            else if (mouse.LeftButton == ButtonState.Pressed && mouseState == 0)
+            {
+                mouseState++;
+                mousePos = new Vector2(mouse.X, mouse.Y);
+            }
+            else if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                var delta = mousePos.Y - mouse.Y;
+
+                if (delta != 0)
+                {
+                    if (delta < 0)
+                    {
+                        delta = 1 - 1 / Math.Max((100 + delta), 10);
+                    }
+                    else
+                    {
+                        delta = 1 + delta / (delta + 1000);
+                    }
+
+                    Console.WriteLine(delta);
+
+                    eyePos.X *= delta;
+                    eyePos.Y *= delta;
+                    eyePos.Z *= delta;
+                    radius *= Math.Sqrt(Math.Pow(eyePos.X, 2) + Math.Pow(eyePos.Y, 2));
+
+                    Matrix4 lookat = Matrix4.LookAt(eyePos.X, eyePos.Y, eyePos.Z, lookAtPos.X, lookAtPos.Y, lookAtPos.Z, 0, 1, 0);
+                    GL.MatrixMode(MatrixMode.Modelview);
+                    GL.LoadMatrix(ref lookat);
+
+                    mousePos = new Vector2(mouse.X, mouse.Y);
+
+                    Console.WriteLine("Radius: " + radius);
+
+                }
+
+                var deltaPeX = mousePos.X - mouse.X;
+
+                if (deltaPeX != 0)
+                {
+
+                }
+
 
             }
 
